@@ -1,0 +1,128 @@
+[
+  {
+    "id": "5551112222",
+    "firstName": "Anna",
+    "lastName": "Nguyen",
+    "email": "anna@example.com",
+    "phone": "(555) 111-2222",
+    "role": "STAFF",
+    "color": "#8B5CF6",
+    "isActive": true,
+    "availability": [
+      {
+        "dayOfWeek": 1,
+        "startTime": "09:00",
+        "endTime": "18:00",
+        "breaks": [
+          {
+            "startTime": "12:00",
+            "endTime": "13:00"
+          }
+        ]
+      },
+      {
+        "dayOfWeek": 2,
+        "startTime": "09:00",
+        "endTime": "18:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 3,
+        "startTime": "09:00",
+        "endTime": "18:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 4,
+        "startTime": "09:00",
+        "endTime": "18:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 5,
+        "startTime": "09:00",
+        "endTime": "18:00",
+        "breaks": []
+      }
+    ],
+    "availableServiceCategories": [
+      "manicure",
+      "pedicure",
+      "refill",
+      "full_set",
+      "dipping_powder",
+      "repair_take_off",
+      "acrylic_toenails",
+      "kid",
+      "polish_regular",
+      "polish_gel",
+      "eyelash",
+      "waxing",
+      "other"
+    ],
+    "passwordHash": "$2b$10$OtHInW4m1nDpqRBkdBi41u5Jt5vbtpDXIhqqwwp7sCVoyCw48E7yG",
+    "createdAt": "2026-02-24T02:51:22.510Z",
+    "updatedAt": "2026-03-01T15:34:51.716Z"
+  },
+  {
+    "id": "5553334444",
+    "firstName": "Linh",
+    "lastName": "Tran",
+    "email": "linh@example.com",
+    "phone": "(555) 333-4444",
+    "role": "RECEPTIONIST",
+    "color": "#3B82F6",
+    "isActive": true,
+    "availability": [
+      {
+        "dayOfWeek": 1,
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 2,
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 3,
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 4,
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "breaks": []
+      },
+      {
+        "dayOfWeek": 5,
+        "startTime": "10:00",
+        "endTime": "19:00",
+        "breaks": []
+      }
+    ],
+    "availableServiceCategories": [],
+    "passwordHash": null,
+    "createdAt": "2026-02-24T02:51:22.510Z",
+    "updatedAt": "2026-02-24T02:51:22.510Z"
+  },
+  {
+    "id": "5551230000",
+    "firstName": "Jack",
+    "lastName": "Lam",
+    "email": "owner@booknailpro.com",
+    "phone": "(555) 123-0000",
+    "role": "OWNER",
+    "color": "#EF4444",
+    "isActive": true,
+    "availability": [],
+    "availableServiceCategories": [],
+    "createdAt": "2026-02-24T02:51:43.201Z",
+    "updatedAt": "2026-03-01T02:15:47.568Z",
+    "passwordHash": "$2b$10$jb5NwVZ3beA30KqstWfnV.iqYQrNvNZuvGQd.bvk3lKi5F43uPoiq"
+  }
+]
