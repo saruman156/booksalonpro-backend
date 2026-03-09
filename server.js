@@ -22,6 +22,7 @@ app.get("/health", async (req, res) => {
     res.status(500).json({
       ok: false,
       message: "Database connection failed",
+      error: error.message,
     });
   }
 });
