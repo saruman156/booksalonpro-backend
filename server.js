@@ -1,13 +1,19 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
 const pool = require("./db");
 
 const app = express(); // ✅ PHẢI khai báo app trước khi app.use
 
 
 // Middlewares
-app.use(cors());
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.get("/health", async (req, res) => {
@@ -46,6 +52,8 @@ const staffRoutes = require("./routes/staff.routes");
 app.use(staffRoutes);
 const authRoutes = require("./routes/auth.routes");
 app.use(authRoutes);
+const customerRoutes = require("./routes/customer.routes");
+app.use(customerRoutes);
 
 //Staff auth routes (set-password, login)
 const staffAuthRoutes = require("./routes/staff.auth.routes");  
