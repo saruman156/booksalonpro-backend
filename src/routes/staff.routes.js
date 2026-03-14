@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const pool = require("../db/pool");
 
 function isValidRole(role) {
   return ["OWNER", "MANAGER", "STAFF", "RECEPTIONIST"].includes(role);
@@ -21,8 +21,7 @@ function formatUSPhone(digits) {
   return d;
 }
 
-// GET /staff?isActive=true|false
-router.get("/staff", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { isActive } = req.query;
 
@@ -68,8 +67,7 @@ router.get("/staff", async (req, res) => {
   }
 });
 
-// POST /staff
-router.post("/staff", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const {
       firstName,
@@ -183,8 +181,7 @@ router.post("/staff", async (req, res) => {
   }
 });
 
-// PATCH /staff/:id
-router.patch("/staff/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -310,8 +307,7 @@ router.patch("/staff/:id", async (req, res) => {
   }
 });
 
-// POST /staff/:id/archive
-router.post("/staff/:id/archive", async (req, res) => {
+router.post("/:id/archive", async (req, res) => {
   try {
     const { id } = req.params;
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const pool = require("../db/pool");
 
 function normalizePhone(phone) {
   if (!phone) return "";
@@ -17,15 +17,14 @@ function formatUSPhone(digits) {
   return d;
 }
 
-// GET /customers
-router.get("/customers", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const result = await pool.query(`
       select
         id,
         first_name as "firstName",
         last_name as "lastName",
-        full_name as "fullName",
+        trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName",
         phone,
         phone_digits as "phoneDigits",
         email,
@@ -55,8 +54,7 @@ router.get("/customers", async (req, res) => {
   }
 });
 
-// GET /customers/search?q=...
-router.get("/customers/search", async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     const q = String(req.query.q || "").trim();
     if (!q) {
@@ -75,7 +73,7 @@ router.get("/customers/search", async (req, res) => {
           id,
           first_name as "firstName",
           last_name as "lastName",
-          full_name as "fullName",
+          trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName"",
           phone,
           phone_digits as "phoneDigits",
           email,
@@ -92,7 +90,7 @@ router.get("/customers/search", async (req, res) => {
         where is_active = true
           and (
             phone_digits like $1
-            or lower(full_name) like $2
+            or lower(trim(coalesce(first_name, '') || ' ' || coalesce(last_name, ''))) like $2
             or lower(coalesce(email, '')) like $2
           )
         order by
@@ -109,7 +107,7 @@ router.get("/customers/search", async (req, res) => {
           id,
           first_name as "firstName",
           last_name as "lastName",
-          full_name as "fullName",
+          trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName"",
           phone,
           phone_digits as "phoneDigits",
           email,
@@ -126,7 +124,7 @@ router.get("/customers/search", async (req, res) => {
         where is_active = true
           and (
             lower(full_name) like $1
-            or lower(coalesce(email, '')) like $1
+            or lower(trim(coalesce(first_name, '') || ' ' || coalesce(last_name, ''))) like $1
           )
         order by created_at desc
         limit 20
@@ -147,8 +145,7 @@ router.get("/customers/search", async (req, res) => {
   }
 });
 
-// POST /customers
-router.post("/customers", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const {
       firstName = null,
@@ -188,23 +185,7 @@ router.post("/customers", async (req, res) => {
 
     const existing = await pool.query(
       `
-      select
-        id,
-        first_name as "firstName",
-        last_name as "lastName",
-        full_name as "fullName",
-        phone,
-        phone_digits as "phoneDigits",
-        email,
-        birthday,
-        notes,
-        internal_notes as "internalNotes",
-        loyalty_points as "loyaltyPoints",
-        visit_count as "visitCount",
-        total_spent as "totalSpent",
-        is_active as "isActive",
-        created_at as "createdAt",
-        updated_at as "updatedAt"
+      select id
       from customers
       where phone_digits = $1
       limit 1
@@ -246,7 +227,7 @@ router.post("/customers", async (req, res) => {
         id,
         first_name as "firstName",
         last_name as "lastName",
-        full_name as "fullName",
+        trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName"",
         phone,
         phone_digits as "phoneDigits",
         email,
@@ -288,8 +269,7 @@ router.post("/customers", async (req, res) => {
   }
 });
 
-// PATCH /customers/:id
-router.patch("/customers/:id", async (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -366,7 +346,7 @@ router.patch("/customers/:id", async (req, res) => {
         id,
         first_name as "firstName",
         last_name as "lastName",
-        full_name as "fullName",
+        trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName"",
         phone,
         phone_digits as "phoneDigits",
         email,
@@ -429,8 +409,7 @@ router.patch("/customers/:id", async (req, res) => {
   }
 });
 
-// POST /customers/:id/archive
-router.post("/customers/:id/archive", async (req, res) => {
+router.post("/:id/archive", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -445,7 +424,7 @@ router.post("/customers/:id/archive", async (req, res) => {
         id,
         first_name as "firstName",
         last_name as "lastName",
-        full_name as "fullName",
+        trim(coalesce(first_name, '') || ' ' || coalesce(last_name, '')) as "fullName"",
         phone,
         phone_digits as "phoneDigits",
         email,
