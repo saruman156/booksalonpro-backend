@@ -7,7 +7,16 @@ const pool = require("./db/pool");
 const staffRoutes = require("./routes/staff.routes");
 const customerRoutes = require("./routes/customer.routes");
 const servicesRoutes = require("./routes/services.routes");
-// const authRoutes = require("./routes/auth.routes");
+const authRoutes = require("./routes/auth.routes");
+const appointmentsRoutes = require("./routes/appointments.routes");
+const giftCardsRoutes = require("./routes/giftCards.routes");
+const commissionsRoutes = require("./routes/commissions.routes");
+const reportsRoutes = require("./routes/reports.routes");
+
+const requireAuth = require("./middlewares/requireAuth");
+const requireRoles = require("./middlewares/requireRoles");
+const payrollRoutes = require("./routes/payroll.routes");
+const suppliesRoutes = require("./routes/supplies.routes");
 
 const app = express();
 
@@ -35,9 +44,60 @@ app.get("/health/db", async (req, res) => {
   }
 });
 
-app.use("/staff", staffRoutes);
-app.use("/customers", customerRoutes);
-app.use("/services", servicesRoutes);
-// app.use("/auth", authRoutes);
+// Public auth only
+app.use("/auth", authRoutes);
+
+// Protected modules
+app.use(
+  "/appointments",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER", "RECEPTIONIST", "TECHNICIAN"),
+  appointmentsRoutes
+);
+
+app.use(
+  "/staff",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER"),
+  staffRoutes
+);
+
+app.use(
+  "/services",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER", "RECEPTIONIST"),
+  servicesRoutes
+);
+
+app.use(
+  "/customers",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER", "RECEPTIONIST", "TECHNICIAN"),
+  customerRoutes
+);
+
+app.use(
+  "/gift-cards",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER", "RECEPTIONIST"),
+  giftCardsRoutes
+);
+
+app.use(
+  "/commissions",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER"),
+  commissionsRoutes
+);
+
+app.use(
+  "/reports",
+  requireAuth,
+  requireRoles("OWNER", "MANAGER", "RECEPTIONIST"),
+  reportsRoutes
+);
+
+app.use("/payroll", payrollRoutes);
+app.use("/supplies", suppliesRoutes);
 
 module.exports = app;

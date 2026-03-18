@@ -1,0 +1,107 @@
+-- 028_payroll_v1.sql
+-- Payroll foundation for current BookSalon schema
+
+begin;
+
+-- =========================================================
+-- 1) PAYROLL PERIODS
+-- =========================================================
+create table if not exists payroll_periods (
+  id uuid primary key default gen_random_uuid(),
+  start_date date not null,
+  end_date date not null,
+  status text not null default 'OPEN', -- OPEN / LOCKED / PAID
+  note text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (end_date >= start_date)
+);
+
+create index if not exists idx_payroll_periods_start_end
+  on payroll_periods (start_date, end_date);
+
+create index if not exists idx_payroll_periods_status
+  on payroll_periods (status);
+
+-- =========================================================
+-- 2) PAYROLL STAFF SUMMARY
+-- staff.id is TEXT in your schema
+-- =========================================================
+create table if not exists payroll_staff (
+  id uuid primary key default gen_random_uuid(),
+
+  payroll_period_id uuid not null references payroll_periods(id) on delete cascade,
+  staff_id text not null references staff(id),
+
+  total_services int not null default 0,
+  total_revenue numeric(12,2) not null default 0,
+  commission_amount numeric(12,2) not null default 0,
+  tip_amount numeric(12,2) not null default 0,
+  bonus numeric(12,2) not null default 0,
+  deduction numeric(12,2) not null default 0,
+  net_pay numeric(12,2) generated always as (
+    commission_amount + tip_amount + bonus - deduction
+  ) stored,
+
+  status text not null default 'PENDING', -- PENDING / PAID
+  payment_method text,
+  payment_date timestamptz,
+  payment_note text,
+
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  unique (payroll_period_id, staff_id)
+);
+
+create index if not exists idx_payroll_staff_period
+  on payroll_staff (payroll_period_id);
+
+create index if not exists idx_payroll_staff_staff
+  on payroll_staff (staff_id);
+
+create index if not exists idx_payroll_staff_status
+  on payroll_staff (status);
+
+-- =========================================================
+-- 3) PAYROLL LINES
+-- appointments.id and appointment_services.id are UUID in your schema
+-- =========================================================
+create table if not exists payroll_lines (
+  id uuid primary key default gen_random_uuid(),
+
+  payroll_staff_id uuid not null references payroll_staff(id) on delete cascade,
+
+  appointment_id uuid references appointments(id) on delete set null,
+  appointment_service_id uuid references appointment_services(id) on delete set null,
+
+  service_name text,
+  service_price numeric(12,2) not null default 0,
+  commission numeric(12,2) not null default 0,
+
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_payroll_lines_payroll_staff
+  on payroll_lines (payroll_staff_id);
+
+create index if not exists idx_payroll_lines_appointment
+  on payroll_lines (appointment_id);
+
+create index if not exists idx_payroll_lines_appointment_service
+  on payroll_lines (appointment_service_id);
+
+-- =========================================================
+-- 4) LINK COMMISSIONS TO PAYROLL PERIOD
+-- Keep no FK here for safety/minimal coupling
+-- =========================================================
+alter table service_commissions
+add column if not exists payroll_period_id uuid;
+
+create index if not exists idx_service_commissions_payroll_period
+  on service_commissions (payroll_period_id);
+
+create index if not exists idx_service_commissions_staff_period
+  on service_commissions (staff_id, payroll_period_id);
+
+commit;

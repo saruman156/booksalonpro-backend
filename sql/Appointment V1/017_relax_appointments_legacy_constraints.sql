@@ -1,0 +1,5 @@
+ALTER TABLE appointments
+ALTER COLUMN customer_id DROP NOT NULL;
+
+ALTER TABLE appointments
+ALTER COLUMN staff_id DROP NOT NULL;

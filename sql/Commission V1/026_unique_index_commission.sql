@@ -1,0 +1,2 @@
+create unique index if not exists uq_service_commissions_service_line
+on service_commissions(appointment_service_id);
